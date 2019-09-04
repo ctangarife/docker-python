@@ -12,7 +12,19 @@ services:
       main:
         aliases:
           - nginx
-
+  api:
+    container_name: api-python
+    build: 
+      context: ./
+      dockerfile: build/app/Dockerfile
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./app:/app
+    networks:
+      main:
+        aliases:
+          - api
 # volumes:
 #   nginx.conf:
 
