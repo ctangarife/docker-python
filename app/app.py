@@ -1,18 +1,18 @@
-#coding: utf-8
+import sys
 
-from flask import Flask, json
+from flask import Flask
+
 app = Flask(__name__)
 
-@app.route("/")
-def summary():
-    data = make_summary()
-    response = app.response_class(
-        response=json.dumps(data),
-        status=200,
-        mimetype='application/json'
-        # return {'a': 1, 'b': 2}
-    )
-    return response
 
-if __name__ == '__main__':
-    app.run(debug=False,host='0.0.0.0')
+@app.route("/")
+def hello():
+    version = "{}.{}".format(sys.version_info.major, sys.version_info.minor)
+    message = "Hello Carlos".format(
+        version
+    )
+    return message
+
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", debug=True)
