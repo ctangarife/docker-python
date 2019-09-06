@@ -12,6 +12,7 @@ services:
     restart: always
     networks:
       - api-network
+      - db-network
   api:
     image: flask:0.0.1
     container_name: api-python
@@ -23,13 +24,45 @@ services:
     volumes:
       - ./app:/app
     environment:
+      - FLASK_DEBUG=1
       - FLASK_APP=/app/app.py
     command: flask run --host=0.0.0.0
+    #command: gunicorn -b run --host=0.0.0.0
     restart: always
     networks:
       api-network:
         aliases:
           - flask-app
+  mongo:
+    image: mongo:latest
+    ports:
+      - 27018:27017
+    environment:
+          - MONGO_DATA_DIR=/data/db
+          - MONGO_LOG_DIR=/dev/null
+          - MONGO_INITDB_ROOT_USERNAME=userd4t4
+          - MONGO_INITDB_ROOT_PASSWORD=1nt3r4ct1v3
+          - MONGO_INITDB_DATABASE=userdb
+    volumes:
+      - ./db/mongo:/data/db
+    restart: always
+    networks:
+      db-network:
+        aliases:
+          - mongo-app
+  mongo-express:
+    image: mongo-express
+    restart: always
+    ports:
+      - 8081:8081
+    environment:
+      - ME_CONFIG_MONGODB_ADMINUSERNAME=userd4t4
+      - ME_CONFIG_MONGODB_ADMINPASSWORD=1nt3r4ct1v3
+    networks:
+      db-network:
+        aliases:
+          - mongo-app
 
 networks:
   api-network:
+  db-network:
